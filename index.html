@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app="myClipperApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Clipper - Next Boat Home</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-touch.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/clippertimes.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.css">
+    <style type="text/css">
+        .outer {
+            display: table;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+        }
+
+        .middle {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .inner {
+            margin-left: auto;
+            margin-right: auto;
+
+            text-align: center;
+        }
+        .topText
+        {
+            font-size: xx-large;
+        }
+        .bottomText
+        {
+            font-size: x-large;
+        }
+        @media only screen and (max-width: 350px) {
+            .topText
+            {
+                font-size: x-large;
+            }
+            .bottomText
+            {
+                font-size: large;
+            }
+        }
+    </style>
+
+</head>
+<body ng-controller="nextClipperController">
+    <div class="outer" ng-click="showSimple=!showSimple">
+        <div class="middle" ng-show="showSimple">
+            <div class="inner">
+                <div class="topText">{{direction}}</div>
+                <div class="bottomText">{{trip.timeUntil}}</div>
+            </div>
+        </div>
+        <div class="middle" ng-show="!showSimple">
+            <div class="inner">
+                <div class="topText">{{direction}}</div>
+                <div class="bottomText" ng-repeat="trip in trips">{{trip.timeUntil}}</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
