@@ -2,42 +2,42 @@ terraform {
   backend "s3" {
     bucket = "ana-terraform-state"
     key = "website-gawn-subdomain-cc/terraform.tfstate"
-    profile = "terraform"
+    profile = "jg"
     region = "eu-west-2"
   }
 }
 
 variable "profile" {
-  type = "string",
-  default = "terraform"
+  type = string
+  default = "jg"
 }
 
 variable "region" {
-  type = "string",
+  type = string
   default = "eu-west-2"
 }
 
 provider "aws" {
-  region = "${var.region}"
-  profile = "${var.profile}"
+  region = var.region
+  profile = var.profile
 }
 
 provider "aws" {
   alias = "us-east-1"
 
   region = "us-east-1"
-  profile = "${var.profile}"
+  profile = var.profile
 }
 
 variable "subdomain" {
-  type = "string"
+  type = string
   default = "cc"
 }
 
 module "website" {
   source = "github.com/jamesgawn/ana-terraform-shared.git/static-website/"
 
-  cert-domain = "*.gawn.uk"
+  cert-domain = "gawn.uk"
   site-name = "website-gawn-subdomain-${var.subdomain}"
   site-domains = ["${var.subdomain}.gawn.uk", "${var.subdomain}.gawn.co.uk"]
   root = "index.html"
@@ -51,10 +51,10 @@ data "aws_route53_zone" "gawn_uk" {
 module "gawn_uk" {
   source = "github.com/jamesgawn/ana-terraform-shared.git/dns/dualstackaliasrecord"
 
-  zone_id = "${data.aws_route53_zone.gawn_uk.zone_id}"
+  zone_id = data.aws_route53_zone.gawn_uk.zone_id
   name = "${var.subdomain}.${data.aws_route53_zone.gawn_uk.name}"
-  alias-target = "${module.website.domain_name}"
-  alias-hosted-zone-id = "${module.website.hosted_zone_id}"
+  alias-target = module.website.domain_name
+  alias-hosted-zone-id = module.website.hosted_zone_id
 }
 
 data "aws_route53_zone" "gawn_co_uk" {
@@ -64,8 +64,8 @@ data "aws_route53_zone" "gawn_co_uk" {
 module "gawn_co_uk" {
   source = "github.com/jamesgawn/ana-terraform-shared.git/dns/dualstackaliasrecord"
 
-  zone_id = "${data.aws_route53_zone.gawn_co_uk.zone_id}"
+  zone_id = data.aws_route53_zone.gawn_co_uk.zone_id
   name = "${var.subdomain}.${data.aws_route53_zone.gawn_co_uk.name}"
-  alias-target = "${module.website.domain_name}"
-  alias-hosted-zone-id = "${module.website.hosted_zone_id}"
+  alias-target = module.website.domain_name
+  alias-hosted-zone-id = module.website.hosted_zone_id
 }
